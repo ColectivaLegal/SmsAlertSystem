@@ -35,5 +35,6 @@
 
 ## Improvements and Todos
 
+  * Use mustache or some other template library to generate the messages
   * Launch the instances into an ASG of 2 machines so that if one machines goes down, traffic and still be served
   * Use a CloudFormation template
