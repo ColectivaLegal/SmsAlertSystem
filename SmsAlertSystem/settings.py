@@ -2,6 +2,18 @@
 
 import os
 
+def envValueOrRaise(key):
+    value = os.environ[key]
+    if value is None:
+        raise Exception("Environment variable '{}' not set".format(key))
+    return value
+
+# Custom environment variables needed by the application
+RSMS_ACCOUNT_SID = envValueOrRaise('RSMS_ACCOUNT_SID')
+RSMS_AUTH_TOKEN = envValueOrRaise('RSMS_AUTH_TOKEN')
+RSMS_NUMBER = envValueOrRaise('RSMS_NUMBER')
+RSMS_HOST = envValueOrRaise('RSMS_HOST')
+
 # The top directory for this project. Contains requirements/, manage.py,
 # and README.rst, a SmsAlertSystem directory with settings etc (see
 # PROJECT_PATH), as well as a directory for each Django app added to this
@@ -12,8 +24,14 @@ PROJECT_ROOT = os.path.dirname(os.path.dirname(__file__))
 # wsgi.py, fixtures, etc.
 PROJECT_PATH = os.path.join(PROJECT_ROOT, 'SmsAlertSystem')
 
-DEBUG = True
+DEBUG = False
 TEMPLATE_DEBUG = DEBUG
+
+ALLOWED_HOSTS = [
+  '127.0.0.1',
+  'localhost',
+  '.elasticbeanstalk.com'
+]
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
@@ -198,6 +216,7 @@ INSTALLED_APPS = (
     "rapidsms.contrib.messagelog",
     "rapidsms.contrib.messaging",
     "rapidsms.contrib.registration",
+    "rtwilio",
     "sms_app",
     #"rapidsms.contrib.echo",
     "rapidsms.contrib.default",  # Must be last
@@ -206,6 +225,15 @@ INSTALLED_APPS = (
 INSTALLED_BACKENDS = {
     "message_tester": {
         "ENGINE": "rapidsms.backends.database.DatabaseBackend",
+    },
+    "twilio-backend": {
+        "ENGINE": "rtwilio.outgoing.TwilioBackend",
+        'config': {
+            'account_sid': RSMS_ACCOUNT_SID,
+            'auth_token': RSMS_AUTH_TOKEN,
+            'number': RSMS_NUMBER,
+            'callback': 'http://{}/backend/twilio/'.format(RSMS_HOST),
+        }
     },
 }
 

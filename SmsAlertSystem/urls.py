@@ -17,4 +17,5 @@ urlpatterns = [
 
     # Third party URLs
     url(r'^selectable/', include('selectable.urls')),
+    url(r'^backend/twilio/', include('rtwilio.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,4 +1,4 @@
-We were unable to understand your question.
+We were unable to understand your message.
   * Text "subscribe" to receive SMS alerts.
   * Text "unsubscribe" to stop receiving SMS alerts.
   * Text "help" to receive this message.
