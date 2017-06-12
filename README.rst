@@ -44,8 +44,9 @@ not necessary if the server is running on port 80.::
     export RSMS_NUMBER="..."
     export RSMS_HOST="..."
 
-Run migrate::
+Create the local database::
 
+    python manage.py makemigrations
     python manage.py migrate
 
 You should now be able to run the development server::
