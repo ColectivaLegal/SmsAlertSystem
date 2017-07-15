@@ -31,7 +31,7 @@ class SubscriptionCourierTestCase(TestCase):
         courier = SubscriptionCourier(messenger, subscription_state, subscriber)
         courier.receive("Keanu Reeves is a great actor")
 
-        assert subscription_state.unknown_subscribe_msg.call_count == 1
+        assert subscription_state.subscribe_help.call_count == 1
 
     def test_unsupported_lang_selection(self):
         messenger = mock.Mock()

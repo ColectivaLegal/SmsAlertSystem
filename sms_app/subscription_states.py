@@ -1,4 +1,4 @@
-from transitions import Machine, State
+from transitions import Machine
 
 from sms_app.asset_paths import *
 from .messaging import Message
@@ -24,84 +24,92 @@ class SubscriptionStates(object):
 
     _TRANSITIONS = [
         {
-            _TRIGGER: "unknown_subscribe_msg",
+            _TRIGGER: "subscribe_help",
             _SRC: UNSUBSCRIBED_STATE,
             _DST: UNSUBSCRIBED_STATE,
-            _BEFORE: "_send_subscribe_help_msg"
+            _AFTER: "_subscribe_help"
         },
         {
-            _TRIGGER: "subscribed",
+            _TRIGGER: "start_subscription",
             _SRC: UNSUBSCRIBED_STATE,
             _DST: SELECTING_LANG_STATE,
-            _BEFORE: "_send_welcome_msg",
-            _AFTER: "_send_lang_select_msg"
+            _AFTER: "_start_subscription"
         },
         {
             _TRIGGER: "unknown_lang_selected",
             _SRC: SELECTING_LANG_STATE,
             _DST: SELECTING_LANG_STATE,
-            _BEFORE: "_send_unsupported_lang_msg",
-            _AFTER: "_send_lang_select_msg"
+            _AFTER: "_unknown_lang_selected"
         },
         {
             _TRIGGER: "lang_selected",
             _SRC: SELECTING_LANG_STATE,
             _DST: COMPLETE_STATE,
-            _AFTER: "_send_confirmation_msg"
+            _AFTER: "_lang_selected"
         },
         {
-            _TRIGGER: "unknown_complete_state_msg",
+            _TRIGGER: "complete_state_help",
             _SRC: COMPLETE_STATE,
             _DST: COMPLETE_STATE,
-            _AFTER: "_send_error_msg"
+            _AFTER: "_complete_state_help"
         },
         {
-            _TRIGGER: "change_lang",
+            _TRIGGER: "reselect_language",
             _SRC: COMPLETE_STATE,
             _DST: SELECTING_LANG_STATE,
-            _AFTER: "_send_lang_select_msg"
+            _AFTER: "_reselect_language"
         },
         {
-            _TRIGGER: "unsubscribed",
+            _TRIGGER: "end_subscription",
             _SRC: COMPLETE_STATE,
             _DST: UNSUBSCRIBED_STATE,
-            _AFTER: "_send_unsubscribed_msg"
+            _AFTER: "_end_subscription"
         },
     ]
 
-    def __init__(self, initial_state, messenger):
-        if initial_state not in SubscriptionStates._STATES:
-            raise Exception("Unknown state: {}".format(initial_state))
+    def __init__(self, subscriber, messenger):
+        if subscriber.state not in SubscriptionStates._STATES:
+            raise Exception("Unknown state: {}".format(subscriber.state))
 
-        self.machine = Machine(
+        self._subscriber = subscriber
+        self._machine = Machine(
             model=self,
             states=SubscriptionStates._STATES,
-            initial=initial_state,
+            initial=subscriber.state,
             transitions=SubscriptionStates._TRANSITIONS
         )
+        self._messenger = messenger
 
-        self.messenger = messenger
-
-    def _send_subscribe_help_msg(self):
+    def _subscribe_help(self):
         self._send_msg(SUBSCRIBE_HELP_MSG_FILE)
 
-    def _send_welcome_msg(self):
+    def _start_subscription(self):
+        self._subscriber.state = SubscriptionStates.SELECTING_LANG_STATE
+        self._subscriber.save()
         self._send_msg(WELCOME_MSG_FILE)
-
-    def _send_lang_select_msg(self):
         self._send_msg(LANG_SELECT_MSG_FILE)
 
-    def _send_unsupported_lang_msg(self):
+    def _unknown_lang_selected(self):
         self._send_msg(UNSUPPORTED_LANG_MSG_FILE)
+        self._send_msg(LANG_SELECT_MSG_FILE)
 
-    def _send_confirmation_msg(self):
+    def _lang_selected(self, iso_code):
+        self._subscriber.state = SubscriptionStates.COMPLETE_STATE
+        self._subscriber.language = iso_code
+        self._subscriber.save()
         self._send_msg(CONFIRMATION_MSG_FILE)
 
-    def _send_error_msg(self):
+    def _complete_state_help(self):
         self._send_msg(ERROR_MSG_FILE)
 
-    def _send_unsubscribed_msg(self):
+    def _reselect_language(self):
+        self._subscriber.state = SubscriptionStates.SELECTING_LANG_STATE
+        self._subscriber.save()
+        self._send_msg(LANG_SELECT_MSG_FILE)
+
+    def _end_subscription(self):
+        self._subscriber.state = SubscriptionStates.UNSUBSCRIBED_STATE
         self._send_msg(UNSUBSCRIBED_MSG_FILE)
 
     def _send_msg(self, filename):
-        self.messenger.send(Message(filename))
+        self._messenger.send(Message(filename))

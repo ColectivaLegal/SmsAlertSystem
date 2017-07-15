@@ -16,7 +16,7 @@ class SubscriptionApp(AppBase):
 
     def __init__(self, router):
         super().__init__(router)
-        self.logger = logging.getLogger("rapidsms")
+        self._logger = logging.getLogger("rapidsms")
 
     def handle(self, msg):
         phone_number = msg.connection.identity
@@ -27,15 +27,15 @@ class SubscriptionApp(AppBase):
                 "state": SubscriptionStates.INITIAL_STATE
             }
         )
-        self.logger.debug(
+        self._logger.debug(
             "Current state of '{}' is '{}' with message '{}'".format(phone_number, subscriber.state, msg)
         )
         messenger = Messenger(msg)
-        subscription_state = SubscriptionStates(subscriber.state, messenger)
+        subscription_state = SubscriptionStates(subscriber, messenger)
         courier = SubscriptionCourier(messenger, subscription_state, subscriber)
 
         msg_text = msg.text.lower().strip()
-        self.logger.debug(
+        self._logger.debug(
             "Current state of '{}' is '{}' with message '{}'".format(phone_number, subscription_state.state, msg_text)
         )
         courier.receive(msg_text)
@@ -64,29 +64,21 @@ class SubscriptionCourier(object):
 
     def _on_unsubscribed_state(self, msg_text):
         if msg_text == SubscriptionCourier._JOIN_MSG:
-            self._subscription_state.subscribed()
-            self._subscriber.state = self._subscription_state.state
-            self._subscriber.save()
+            self._subscription_state.start_subscription()
         else:
-            self._subscription_state.unknown_subscribe_msg()
+            self._subscription_state.subscribe_help()
 
     def _on_select_lang_state(self, msg_text):
         try:
             iso_code = Language.language(msg_text)
-            self._subscription_state.lang_selected()
-            self._subscriber.state = self._subscription_state.state
-            self._subscriber.language = iso_code
-            self._subscriber.save()
+            self._subscription_state.lang_selected(iso_code)
         except UnknownLanguageId:
             self._subscription_state.unknown_lang_selected()
 
     def _on_complete_state(self, msg_text):
         if msg_text == SubscriptionCourier._CHG_LANG_MSG:
-            self._subscription_state.change_lang()
-            self._subscriber.state = SubscriptionStates.SELECTING_LANG_STATE
-            self._subscriber.save()
+            self._subscription_state.reselect_language()
         elif msg_text == SubscriptionCourier._LEAVE_MSG:
-            self._subscription_state.unsubscribed()
-            self._subscriber.delete()
+            self._subscription_state.end_subscription()
         else:
-            self._subscription_state.unknown_complete_state_msg()
+            self._subscription_state.complete_state_help()
