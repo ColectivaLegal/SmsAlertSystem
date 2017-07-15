@@ -1,6 +1,9 @@
 Sms Alert System
 ========================
 
+.. image:: https://travis-ci.org/ColectivaLegal/SmsAlertSystem.svg?branch=master
+    :target: https://travis-ci.org/ColectivaLegal/SmsAlertSystem
+
 Below you will find basic setup instructions for the ``SmsAlertSystem`` project. To begin you should have the following
 applications installed on your local development system:
 

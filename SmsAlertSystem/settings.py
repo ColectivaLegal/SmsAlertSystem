@@ -8,12 +8,6 @@ def envValueOrRaise(key):
         raise Exception("Environment variable '{}' not set".format(key))
     return value
 
-# Custom environment variables needed by the application
-RSMS_ACCOUNT_SID = envValueOrRaise('RSMS_ACCOUNT_SID')
-RSMS_AUTH_TOKEN = envValueOrRaise('RSMS_AUTH_TOKEN')
-RSMS_NUMBER = envValueOrRaise('RSMS_NUMBER')
-RSMS_HOST = envValueOrRaise('RSMS_HOST')
-
 # The top directory for this project. Contains requirements/, manage.py,
 # and README.rst, a SmsAlertSystem directory with settings etc (see
 # PROJECT_PATH), as well as a directory for each Django app added to this
@@ -50,6 +44,20 @@ if 'RDS_HOSTNAME' in os.environ:
             'PORT': os.environ['RDS_PORT'],
         }
     }
+    INSTALLED_BACKENDS = {
+        "message_tester": {
+            "ENGINE": "rapidsms.backends.database.DatabaseBackend",
+        },
+        "twilio-backend": {
+            "ENGINE": "rtwilio.outgoing.TwilioBackend",
+            'config': {
+                'account_sid': envValueOrRaise('RSMS_ACCOUNT_SID'),
+                'auth_token': envValueOrRaise('RSMS_AUTH_TOKEN'),
+                'number': envValueOrRaise('RSMS_NUMBER'),
+                'callback': 'http://{}/backend/twilio/'.format(envValueOrRaise('RSMS_HOST')),
+            }
+        },
+    }
 else:
     DATABASES = {
         'default': {
@@ -59,6 +67,11 @@ else:
             'PASSWORD': '',
             'HOST': '',
             'PORT': '',
+        }
+    }
+    INSTALLED_BACKENDS = {
+        "message_tester": {
+            "ENGINE": "rapidsms.backends.database.DatabaseBackend",
         }
     }
 
@@ -233,21 +246,6 @@ INSTALLED_APPS = (
     #"rapidsms.contrib.echo",
     "rapidsms.contrib.default",  # Must be last
 )
-
-INSTALLED_BACKENDS = {
-    "message_tester": {
-        "ENGINE": "rapidsms.backends.database.DatabaseBackend",
-    },
-    "twilio-backend": {
-        "ENGINE": "rtwilio.outgoing.TwilioBackend",
-        'config': {
-            'account_sid': RSMS_ACCOUNT_SID,
-            'auth_token': RSMS_AUTH_TOKEN,
-            'number': RSMS_NUMBER,
-            'callback': 'http://{}/backend/twilio/'.format(RSMS_HOST),
-        }
-    },
-}
 
 LOGIN_REDIRECT_URL = '/'
 
