@@ -1,8 +1,9 @@
 import logging
+import traceback
 
 from rapidsms.apps.base import AppBase
 
-from .languages import Language, UnknownLanguageId
+from .languages import Language, UnknownLanguageId, MessageContent
 from .messaging import Messenger
 from .models import Subscriber
 from .subscription_states import SubscriptionStates
@@ -38,16 +39,19 @@ class SubscriptionApp(AppBase):
         self._logger.debug(
             "Current state of '{}' is '{}' with message '{}'".format(phone_number, subscription_state.state, msg_text)
         )
-        courier.receive(msg_text)
+
+        # django logging is notoriously shitty - this is where the errors usually occur
+        try:
+            courier.receive(msg_text)
+        except Exception as e:
+            self._logger.error("Error occurred in SubscriptionApp: {}".format(e))
+            self._logger.error("Backtrace: {}".format(traceback.format_exc()))
+            raise e
 
         return True
 
 
 class SubscriptionCourier(object):
-    _JOIN_MSG = "join"
-    _CHG_LANG_MSG = "change language"
-    _LEAVE_MSG = "leave"
-
     def __init__(self, messenger, subscription_state, subscriber):
         self._messenger = messenger
         self._subscription_state = subscription_state
@@ -63,7 +67,7 @@ class SubscriptionCourier(object):
         self._handled_msgs[self._subscription_state.state](msg_text)
 
     def _on_unsubscribed_state(self, msg_text):
-        if msg_text == SubscriptionCourier._JOIN_MSG:
+        if MessageContent(msg_text).is_join_msg():
             self._subscription_state.start_subscription()
         else:
             self._subscription_state.subscribe_help()
@@ -76,9 +80,9 @@ class SubscriptionCourier(object):
             self._subscription_state.unknown_lang_selected()
 
     def _on_complete_state(self, msg_text):
-        if msg_text == SubscriptionCourier._CHG_LANG_MSG:
+        if MessageContent(msg_text).is_change_lang_msg():
             self._subscription_state.reselect_language()
-        elif msg_text == SubscriptionCourier._LEAVE_MSG:
+        elif MessageContent(msg_text).is_leave_msg():
             self._subscription_state.end_subscription()
         else:
             self._subscription_state.complete_state_help()

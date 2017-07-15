@@ -1,6 +1,0 @@
-Select your preferred language:
-Text "1" for English
-Text "2" for Spanish
-Text "3" for Korean
-Text "4" for Mandarin
-Text "5" for Vietnamese

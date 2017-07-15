@@ -11,7 +11,7 @@ class SubscriptionAppTestCase(TestCase):
 
     def test_unknown_msg_handling(self):
         msg = mock.Mock()
-        msg.connection.identity = "(000) 000-0000"
+        msg.connection.identity = "+11234567890"
         msg.connections = [mock.Mock()]
         msg.text = "some RANDOM garbage"
 
@@ -43,3 +43,14 @@ class SubscriptionCourierTestCase(TestCase):
         courier.receive("?")
 
         assert subscription_state.unknown_lang_selected.call_count == 1
+
+    def test_reselect_lang(self):
+        messenger = mock.Mock()
+        subscription_state = mock.Mock()
+        subscription_state.state = SubscriptionStates.COMPLETE_STATE
+        subscriber = mock.Mock()
+
+        courier = SubscriptionCourier(messenger, subscription_state, subscriber)
+        courier.receive("cambio de lengua")
+
+        assert subscription_state.reselect_language.call_count == 1

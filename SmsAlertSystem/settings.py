@@ -2,11 +2,13 @@
 
 import os
 
+
 def envValueOrRaise(key):
     value = os.environ[key]
     if value is None:
         raise Exception("Environment variable '{}' not set".format(key))
     return value
+
 
 # The top directory for this project. Contains requirements/, manage.py,
 # and README.rst, a SmsAlertSystem directory with settings etc (see
@@ -22,9 +24,9 @@ DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
 ALLOWED_HOSTS = [
-  '127.0.0.1',
-  'localhost',
-  '.elasticbeanstalk.com'
+    '127.0.0.1',
+    'localhost',
+    '.elasticbeanstalk.com'
 ]
 
 ADMINS = (
@@ -55,6 +57,7 @@ if 'RDS_HOSTNAME' in os.environ:
                 'auth_token': envValueOrRaise('RSMS_AUTH_TOKEN'),
                 'number': envValueOrRaise('RSMS_NUMBER'),
                 'callback': 'http://{}/backend/twilio/'.format(envValueOrRaise('RSMS_HOST')),
+                'encoding': 'utf-8'
             }
         },
     }
@@ -243,13 +246,13 @@ INSTALLED_APPS = (
     "rapidsms.contrib.registration",
     "rtwilio",
     "sms_app",
-    #"rapidsms.contrib.echo",
+    # "rapidsms.contrib.echo",
     "rapidsms.contrib.default",  # Must be last
 )
 
 LOGIN_REDIRECT_URL = '/'
 
 RAPIDSMS_HANDLERS = (
-    #'rapidsms.contrib.echo.handlers.echo.EchoHandler',
-    #'rapidsms.contrib.echo.handlers.ping.PingHandler',
+    # 'rapidsms.contrib.echo.handlers.echo.EchoHandler',
+    # 'rapidsms.contrib.echo.handlers.ping.PingHandler',
 )

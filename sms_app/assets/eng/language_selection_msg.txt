@@ -1,0 +1,3 @@
+Select your preferred language:
+* Text "1" for English
+* Responda escribiendo "2" para recibir mensajes en español

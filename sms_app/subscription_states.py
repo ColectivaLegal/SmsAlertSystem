@@ -1,6 +1,6 @@
 from transitions import Machine
 
-from sms_app.asset_paths import *
+from .asset_file import AssetFile
 from .messaging import Message
 
 
@@ -81,35 +81,39 @@ class SubscriptionStates(object):
         self._messenger = messenger
 
     def _subscribe_help(self):
-        self._send_msg(SUBSCRIBE_HELP_MSG_FILE)
+        self._send_msgs([AssetFile(self._subscriber.language).subscribe_help_file()])
 
     def _start_subscription(self):
         self._subscriber.state = SubscriptionStates.SELECTING_LANG_STATE
         self._subscriber.save()
-        self._send_msg(WELCOME_MSG_FILE)
-        self._send_msg(LANG_SELECT_MSG_FILE)
+        self._send_msgs([
+            AssetFile(self._subscriber.language).welcome_file(),
+            AssetFile(self._subscriber.language).lang_select_file()
+        ])
 
     def _unknown_lang_selected(self):
-        self._send_msg(UNSUPPORTED_LANG_MSG_FILE)
-        self._send_msg(LANG_SELECT_MSG_FILE)
+        self._send_msgs([
+            AssetFile(self._subscriber.language).unsupported_lang_file(),
+            AssetFile(self._subscriber.language).lang_select_file()
+        ])
 
     def _lang_selected(self, iso_code):
         self._subscriber.state = SubscriptionStates.COMPLETE_STATE
         self._subscriber.language = iso_code
         self._subscriber.save()
-        self._send_msg(CONFIRMATION_MSG_FILE)
+        self._send_msgs([AssetFile(self._subscriber.language).confirmation_file()])
 
     def _complete_state_help(self):
-        self._send_msg(ERROR_MSG_FILE)
+        self._send_msgs([AssetFile(self._subscriber.language).error_file()])
 
     def _reselect_language(self):
         self._subscriber.state = SubscriptionStates.SELECTING_LANG_STATE
         self._subscriber.save()
-        self._send_msg(LANG_SELECT_MSG_FILE)
+        self._send_msgs([AssetFile(self._subscriber.language).lang_select_file()])
 
     def _end_subscription(self):
-        self._subscriber.state = SubscriptionStates.UNSUBSCRIBED_STATE
-        self._send_msg(UNSUBSCRIBED_MSG_FILE)
+        self._send_msgs([AssetFile(self._subscriber.language).unsubscribe_file()])
+        self._subscriber.delete()
 
-    def _send_msg(self, filename):
-        self._messenger.send(Message(filename))
+    def _send_msgs(self, filenames):
+        self._messenger.send([Message(filename) for filename in filenames])
