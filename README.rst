@@ -133,6 +133,16 @@ Sending Messages to the Remote Server
 
 TODO: Create a *python* script that allows the user to send messages to the remote server.
 
+Restarting The Remote Server on the Server
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+EBS uses Apache as the serving engine. To restart it, run the following::
+
+    apachectl -k restart
+
+This is based on the (`Apache Documentation`_).
+
+.. _Apache Documentation: https://httpd.apache.org/docs/2.4/stopping.html
 
 References
 ==========
