@@ -9,6 +9,8 @@ def envValueOrRaise(key):
         raise Exception("Environment variable '{}' not set".format(key))
     return value
 
+def isDebugEnv():
+    return 'RDS_HOSTNAME' not in os.environ
 
 # The top directory for this project. Contains requirements/, manage.py,
 # and README.rst, a SmsAlertSystem directory with settings etc (see
@@ -20,8 +22,7 @@ PROJECT_ROOT = os.path.dirname(os.path.dirname(__file__))
 # wsgi.py, fixtures, etc.
 PROJECT_PATH = os.path.join(PROJECT_ROOT, 'SmsAlertSystem')
 
-DEBUG = False
-TEMPLATE_DEBUG = DEBUG
+DEBUG = TEMPLATE_DEBUG = isDebugEnv()
 
 ALLOWED_HOSTS = [
     '127.0.0.1',
@@ -35,7 +36,24 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
-if 'RDS_HOSTNAME' in os.environ:
+if DEBUG:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'SmsAlertSystem.db',
+            'USER': '',
+            'PASSWORD': '',
+            'HOST': '',
+            'PORT': '',
+        }
+    }
+    INSTALLED_BACKENDS = {
+        "message_tester": {
+            "ENGINE": "rapidsms.backends.database.DatabaseBackend",
+        }
+    }
+# prod
+else:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
@@ -60,22 +78,6 @@ if 'RDS_HOSTNAME' in os.environ:
                 'encoding': 'utf-8'
             }
         },
-    }
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'SmsAlertSystem.db',
-            'USER': '',
-            'PASSWORD': '',
-            'HOST': '',
-            'PORT': '',
-        }
-    }
-    INSTALLED_BACKENDS = {
-        "message_tester": {
-            "ENGINE": "rapidsms.backends.database.DatabaseBackend",
-        }
     }
 
 # Local time zone for this installation. Choices can be found here:
