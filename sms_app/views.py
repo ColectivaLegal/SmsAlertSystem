@@ -1,5 +1,8 @@
 from string import Template
 
+import boto3
+import logging
+
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
@@ -32,14 +35,18 @@ class Alert(object):
     def __init__(self, address):
         self._address = address
         self._translation_mapping = {}
+        self._logger = logging.getLogger("rapidsms")
 
     def send_to_everyone(self):
+        sns_client = boto3.client('sns', region_name="us-west-2")
+
         subscribers = Subscriber.objects.all()
         for subscriber in subscribers:
-            print("Sending '{}' message to '{}'".format(
-                self._alert_translation(subscriber.language),
-                subscriber.phone_number
-            ))
+            response = sns_client.publish(
+                PhoneNumber=subscriber.phone_number,
+                Message=self._alert_translation(subscriber.language)
+            )
+            self._logger.debug("Received SNS response: {}".format(response))
 
     def _alert_translation(self, lang):
         if lang in self._translation_mapping:
