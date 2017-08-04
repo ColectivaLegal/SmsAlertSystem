@@ -2,6 +2,7 @@ import os
 
 from .languages import Language
 
+
 class AssetFile(object):
     _ASSET_DIR = "sms_app/assets/"
 
@@ -12,6 +13,7 @@ class AssetFile(object):
     _WELCOME_MSG_FILE = "welcome_msg.txt"
     _UNSUBSCRIBED_MSG_FILE = "unsubscribed_msg.txt"
     _ERROR_MSG_FILE = "error_msg.txt"
+    _ACTION_ALERT_FILE = "action_alert.txt"
 
     def __init__(self, lang):
         self._lang = lang
@@ -36,6 +38,9 @@ class AssetFile(object):
 
     def error_file(self):
         return self._asset_file(AssetFile._ERROR_MSG_FILE)
+
+    def action_alert_file(self):
+        return self._asset_file(AssetFile._ACTION_ALERT_FILE)
 
     def _asset_file(self, filename):
         lang_file = "{}/{}/{}".format(AssetFile._ASSET_DIR, self._lang, filename)

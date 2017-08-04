@@ -18,4 +18,7 @@ urlpatterns = [
     # Third party URLs
     url(r'^selectable/', include('selectable.urls')),
     url(r'^backend/twilio/', include('rtwilio.urls')),
+
+    # SmsAlertSystem URLs
+    url(r'^alertform/', include('sms_app.urls'))
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

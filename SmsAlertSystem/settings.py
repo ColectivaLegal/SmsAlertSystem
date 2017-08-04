@@ -3,14 +3,16 @@
 import os
 
 
-def envValueOrRaise(key):
+def env_value_or_raise(key):
     value = os.environ[key]
     if value is None:
         raise Exception("Environment variable '{}' not set".format(key))
     return value
 
-def isDebugEnv():
+
+def is_debug_env():
     return 'RDS_HOSTNAME' not in os.environ
+
 
 # The top directory for this project. Contains requirements/, manage.py,
 # and README.rst, a SmsAlertSystem directory with settings etc (see
@@ -22,7 +24,7 @@ PROJECT_ROOT = os.path.dirname(os.path.dirname(__file__))
 # wsgi.py, fixtures, etc.
 PROJECT_PATH = os.path.join(PROJECT_ROOT, 'SmsAlertSystem')
 
-DEBUG = TEMPLATE_DEBUG = isDebugEnv()
+DEBUG = TEMPLATE_DEBUG = is_debug_env()
 
 ALLOWED_HOSTS = [
     '127.0.0.1',
@@ -71,10 +73,10 @@ else:
         "twilio-backend": {
             "ENGINE": "rtwilio.outgoing.TwilioBackend",
             'config': {
-                'account_sid': envValueOrRaise('RSMS_ACCOUNT_SID'),
-                'auth_token': envValueOrRaise('RSMS_AUTH_TOKEN'),
-                'number': envValueOrRaise('RSMS_NUMBER'),
-                'callback': 'http://{}/backend/twilio/'.format(envValueOrRaise('RSMS_HOST')),
+                'account_sid': env_value_or_raise('RSMS_ACCOUNT_SID'),
+                'auth_token': env_value_or_raise('RSMS_AUTH_TOKEN'),
+                'number': env_value_or_raise('RSMS_NUMBER'),
+                'callback': 'http://{}/backend/twilio/'.format(env_value_or_raise('RSMS_HOST')),
                 'encoding': 'utf-8'
             }
         },
@@ -260,6 +262,7 @@ RAPIDSMS_HANDLERS = (
 )
 
 # Configure Django to use HTTPS
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
+if not DEBUG:
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True

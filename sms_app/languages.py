@@ -8,6 +8,11 @@ class Language(object):
 
     DEFAULT_LANGUAGE = ENGLISH
 
+    SUPPORTED_LANGUAGES = [
+        ENGLISH,
+        SPANISH
+    ]
+
     _language_id = {
         "1": ENGLISH,
         "2": SPANISH,
