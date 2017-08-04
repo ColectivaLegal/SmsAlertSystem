@@ -258,3 +258,8 @@ RAPIDSMS_HANDLERS = (
     # 'rapidsms.contrib.echo.handlers.echo.EchoHandler',
     # 'rapidsms.contrib.echo.handlers.ping.PingHandler',
 )
+
+# Configure Django to use HTTPS
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
