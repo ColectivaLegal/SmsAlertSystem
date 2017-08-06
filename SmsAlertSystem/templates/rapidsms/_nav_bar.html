@@ -1,6 +1,8 @@
 <li><a href="{% url 'alertform' %}">Alert Form</a></li>
 <li><a href="{% url 'followup' %}">Follow Up Form</a></li>
-<li><a href="{% url 'message_log' %}">Message Log</a></li>
-<li><a href="{% url 'registration' %}">Registration</a></li>
-<li><a href="{% url 'messaging' %}">Messaging</a></li>
-<li><a href="{% url 'httptester-index' %}">Message Tester</a></li>
+{% load debug_tags %}
+{% is_debug_mode as debug_mode %}
+{% if debug_mode %}
+    <li><a href="{% url 'message_log' %}">Message Log</a></li>
+    <li><a href="{% url 'httptester-index' %}">Message Tester</a></li>
+{% endif %}
