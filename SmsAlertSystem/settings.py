@@ -135,7 +135,10 @@ STATICFILES_FINDERS = (
 )
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = 'ed@wsbbrwsk1qbgb5(@47113dzuq(kedv#0^@uhh3x*&p0&+y4'
+if DEBUG:
+    SECRET_KEY = 'ed@wsbbrwsk1qbgb5(@47113dzuq(kedv#0^@uhh3x*&p0&+y4'
+else:
+    SECRET_KEY = env_value_or_raise("DJANGO_SECRET_KEY")
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
