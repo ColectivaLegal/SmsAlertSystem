@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load django_tables2 %}
+
+{% block title %}Follow Up Form - {{ block.super }}{% endblock %}
+
+{% block content %}
+    <div class="page-header">
+        <h1>Follow Up Form</h1>
+    </div>
+    <form action="/sms_app/followup/" method="post">
+        {% csrf_token %}
+        {{ form }}
+        <br/>
+        <input type="submit" value="Submit" />
+    </form>
+{% endblock %}

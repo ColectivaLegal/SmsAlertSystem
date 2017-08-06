@@ -1,0 +1,1 @@
+El ICE detuvo $num_people personas en $city hoy. Por favor, llame $target_name al $target_phone_num para exigir su liberación y pedir al ICE que se mantenga fuera de WA!

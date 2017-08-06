@@ -1,0 +1,1 @@
+ICE detained $num_people people in $city today. Please call $target_name at $target_phone_num to demand their release and call for ICE to stay out of WA!

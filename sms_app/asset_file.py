@@ -14,6 +14,7 @@ class AssetFile(object):
     _UNSUBSCRIBED_MSG_FILE = "unsubscribed_msg.txt"
     _ERROR_MSG_FILE = "error_msg.txt"
     _ACTION_ALERT_FILE = "action_alert.txt"
+    _FOLLOW_UP_FILE = "follow_up.txt"
 
     def __init__(self, lang):
         self._lang = lang
@@ -41,6 +42,9 @@ class AssetFile(object):
 
     def action_alert_file(self):
         return self._asset_file(AssetFile._ACTION_ALERT_FILE)
+
+    def follow_up_file(self):
+        return self._asset_file(AssetFile._FOLLOW_UP_FILE)
 
     def _asset_file(self, filename):
         lang_file = "{}/{}/{}".format(AssetFile._ASSET_DIR, self._lang, filename)

@@ -20,5 +20,5 @@ urlpatterns = [
     url(r'^backend/twilio/', include('rtwilio.urls')),
 
     # SmsAlertSystem URLs
-    url(r'^alertform/', include('sms_app.urls'))
+    url(r'^sms_app/', include('sms_app.urls'))
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

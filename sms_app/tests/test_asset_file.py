@@ -24,6 +24,8 @@ class AssetExistenceTestCase(TestCase):
         self.assertTrue(os.path.isfile(AssetFile(lang).confirmation_file()))
         self.assertTrue(os.path.isfile(AssetFile(lang).error_file()))
         self.assertTrue(os.path.isfile(AssetFile(lang).unsubscribe_file()))
+        self.assertTrue(os.path.isfile(AssetFile(lang).action_alert_file()))
+        self.assertTrue(os.path.isfile(AssetFile(lang).follow_up_file()))
 
     def _test_eng_only_files(self, lang):
         self.assertTrue(os.path.isfile(AssetFile(lang).lang_select_file()))
