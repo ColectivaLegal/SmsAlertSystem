@@ -11,6 +11,7 @@ from django.shortcuts import render
 from sms_app.asset_file import AssetFile
 from sms_app.messaging import Message
 from sms_app.models import Subscriber
+from sms_app.subscription_states import SubscriptionStates
 from .forms import AlertForm, FollowUpForm
 
 
@@ -27,7 +28,7 @@ def alert_form(request):
 
             Notifier(
                 boto3.client('sns', region_name="us-west-2"),
-                Subscriber.objects.all()
+                Subscriber.objects.filter(state=SubscriptionStates.COMPLETE_STATE)
             ).send(notification)
 
             print("notifications sent")
@@ -59,7 +60,7 @@ def followup_form(request):
 
             Notifier(
                 boto3.client('sns', region_name="us-west-2"),
-                Subscriber.objects.all()
+                Subscriber.objects.filter(state=SubscriptionStates.COMPLETE_STATE)
             ).send(notification)
 
             return HttpResponseRedirect('sms_app/followup/sent/')
