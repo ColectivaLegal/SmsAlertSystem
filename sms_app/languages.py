@@ -10,7 +10,10 @@ class Language(object):
 
     SUPPORTED_LANGUAGES = [
         ENGLISH,
-        SPANISH
+        SPANISH,
+        KOREAN,
+        MANDARIN,
+        VIETNAMESE
     ]
 
     _language_id = {
@@ -37,15 +40,24 @@ class UnknownLanguageId(Exception):
 class MessageContent(object):
     _JOIN_PHRASES = [
         "join",
-        "suscribirse"
+        "suscribirse",
+        "등록",
+        "加入",
+        "Tham gia",
     ]
     _CHG_LANG_PHRASES = [
         "change language",
-        "cambio de lengua"
+        "cambio de lengua",
+        "언어변경",
+        "改變語言",
+        "Thay đổi ngôn ngữ",
     ]
     _LEAVE_PHRASES = [
         "leave",
-        "abandonar"
+        "abandonar",
+        "탈퇴",
+        "離開",
+        "Rời khỏi",
     ]
 
     def __init__(self, msg):

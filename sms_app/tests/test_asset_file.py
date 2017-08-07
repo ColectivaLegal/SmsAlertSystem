@@ -20,6 +20,15 @@ class AssetExistenceTestCase(TestCase):
     def test_spa_asset_existence(self):
         self._test_lang_specific_files(Language.SPANISH)
 
+    def test_cmn_asset_existence(self):
+        self._test_lang_specific_files(Language.MANDARIN)
+
+    def test_kor_asset_existence(self):
+        self._test_lang_specific_files(Language.KOREAN)
+
+    def test_vie_asset_existence(self):
+        self._test_lang_specific_files(Language.VIETNAMESE)
+
     def _test_lang_specific_files(self, lang):
         self.assertTrue(os.path.isfile(AssetFile(lang).confirmation_file()))
         self.assertTrue(os.path.isfile(AssetFile(lang).error_file()))

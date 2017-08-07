@@ -1,0 +1,1 @@
+今天ICE在 $city 扣押了 $num_people 位人們。請撥 $target_phone_num 找 $target_name 要求釋放，並且要求ICE離開華盛頓州！

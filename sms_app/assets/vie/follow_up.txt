@@ -1,0 +1,1 @@
+Ngày hôm nay Công Vụ về Di Dân -ICE- đã giam giữ $num_people người trong thành phố  $city. Xin hãy gọi đến $target_name qua số điện thoại $target_phone_num để yêu cầu họ thả người và cũng gọi yêu cầu Công Vụ về Di Dân nên ra khỏi bang Washington.
