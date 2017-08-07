@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+
+{% block stylesheets %}
+{{ block.super }}
+<style type="text/css">
+	#inner {
+		margin: 4em 25%;
+	}
+
+	div.module div {
+		border: 1px solid #ddd;
+		border-top-color: #636363;
+		margin-top: -1px;
+	}
+
+	div.module p {
+		padding-left: 1em;
+		padding-right: 1em;
+	}
+
+	div.module ul, ol {
+		padding-left: 2em;
+		padding-right: 1em;
+	}
+
+	code, pre {
+		background: #ffe;
+	}
+
+	pre {
+		padding: 1em;
+		margin: 0;
+	}
+</style>
+{% endblock %}
+
+{% block content %}
+  <div class="page-header">
+      <h1>Welcome to the WAISN SMS Alert System!</h1>
+  </div>
+
+    <div class="module">
+	<div>
+		<br/>
+		<p>
+			The WAISN SMS Alert System permits users to subscribe to receiving SMS alerts by texting to the WAISN SMS
+			System phone number. After they are subscribed, this website can be used to send two types of notifications:
+		</p>
+		<ul>
+			<li>
+				<b>Alert Notifications</b>: after an event has been confirmed, use an alert notification to send out the
+				address of the event.
+			</li>
+			<li>
+				<b>Follow Up Notifications</b>: after an event has terminated, use a follow up notification to send out
+				information about the event and follow up details.
+			</li>
+		</ul>
+		<p>
+			The forms for both of these notifications can be found in the top navigation bar under <b>Alert Form</b>
+			and <b>Follow Up Form</b>, respectively. The directions are as follows for both notifications:
+		</p>
+		<ol>
+			<li>Go to the desired notification form</li>
+			<li>Fill out the form</li>
+			<li>Hit <b>Submit</b></li>
+			<li>All the people subscribed to receive notifications to receive the message in their desired language</li>
+		</ol>
+	</div>
+</div>
+{% endblock %}
