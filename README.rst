@@ -69,10 +69,13 @@ Deploying to Elastic Beanstalk
 One Time Set-Up
 ~~~~~~~~~~~~~~~
 
-An EB project is initialized locally and an environment in EB is created via::
+Install the EB CLI:
+* [Install the Elastic Beanstalk Command Line Interface AWS Doc](https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/eb-cli3-install.html)
 
-    eb init colectiva
-    eb create rapidsms-alert-sys-env
+Initialized the EB environment in the git root directory via::
+
+    # since the application already exists, this should pull down its configuration
+    eb init rapidsms-alert-sys --profile ${AWS_PROFILE}
     # this should print the environment that was just created
     eb list
 
